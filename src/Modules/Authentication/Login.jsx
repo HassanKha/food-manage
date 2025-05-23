@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Login() {
+function Login({SaveLoginData}) {
   const {
     register,
     handleSubmit,
@@ -15,7 +15,9 @@ const navigate = useNavigate();
   const onSubmit = async (data) => {
     try {
       const response = await axios.post("https://upskilling-egypt.com:3006/api/v1/Users/Login", data);
+      localStorage.setItem("token", response.data.token);
       console.log("Login successful:", response.data);
+      SaveLoginData();
       toast.success("Login successful!");
       navigate("/dashboard")
     } catch (error) {

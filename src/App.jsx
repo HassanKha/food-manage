@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -21,8 +21,48 @@ import CategoriesList from "./Modules/Categories/CategoriesList";
 import CategoryData from "./Modules/Categories/CategoryData";
 import UsersList from "./Modules/Users/UsersList";
 import FavList from "./Modules/Favourites/FavList";
+import { jwtDecode } from "jwt-decode";
+import ProtectedRoute from "./Modules/Shared/ProtectedRoute";
+
 
 function App() {
+const getInitialLoggedData = () => {
+  try {
+    const token = localStorage.getItem("token");
+    return token ? jwtDecode(token) : null;
+  } catch (err) {
+    return null;
+  }
+};
+  const [LoggedData, setLoggedData] = useState(getInitialLoggedData);
+
+  const SaveLoginData = () => {
+    let encodedToken = localStorage.getItem("token");
+    encodedToken = jwtDecode(encodedToken);
+    setLoggedData(encodedToken);
+
+  }
+
+
+  useEffect(() => {
+  if (!LoggedData) {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        setLoggedData(decodedToken);
+      } catch (error) {
+        console.error("Invalid token:", error.message);
+        localStorage.removeItem("token"); // Clean up
+      
+      }
+    } 
+  }
+}, []);
+
+
   const routes = createBrowserRouter([
     {
       path: "",
@@ -30,11 +70,11 @@ function App() {
       children: [
         {
           index: true,
-          element: <Login />,
+          element: <Login SaveLoginData={SaveLoginData} />,
         },
         {
           path: "login",
-          element: <Login />,
+          element: <Login SaveLoginData={SaveLoginData} />,
         },
         {
           path: "register",
@@ -57,7 +97,7 @@ function App() {
     },
     {
       path: "/dashboard",
-      element: <MasterLayout />,
+      element: <ProtectedRoute><MasterLayout LoggedData={LoggedData} /> </ProtectedRoute> ,
       children: [
         {
           index: true,

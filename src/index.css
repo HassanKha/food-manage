@@ -54,3 +54,30 @@ form .login-btn {
 }
 
 
+.sidebar-cont .ps-sidebar-container {
+background-color: rgba(31, 38, 62, 1);
+height: 100vh;
+}
+
+.sidebar-cont .ps-menu-button{
+    color: #fff !important;
+}
+.sidebar-cont .ps-menuitem-root .ps-menu-button:hover{
+    background-color: rgba(0,146,77,0.1);
+    border-left: 4px solid rgba(0,146,77,1);
+}
+.sidebar-cont .ps-menuitem-root .ps-menu-button img{
+  width: 80px;
+  length: 100px;
+}
+.sidebar-cont .sidebar-logo a:hover{
+    background-color: transparent !important;
+}
+
+.sidebar-cont .sidebar-logo .ps-menu-button{
+    padding: 0 !important;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
