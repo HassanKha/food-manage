@@ -129,6 +129,10 @@ const getInitialLoggedData = () => {
         },
       ],
     },
+    {
+  path: "*",
+  element: <Notfound />
+}
   ]);
   return (
     <>
