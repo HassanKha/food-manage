@@ -81,3 +81,69 @@ height: 100vh;
 .cursor-pointer {
     cursor: pointer;
 }
+
+nav .searchInput {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Remove focus styles explicitly */
+nav .searchInput:focus {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+nav .SearchDiv {
+    background-color: #fff;
+  /* width: 60%; */
+    border-radius: 1rem;
+}
+
+.bi-arrow-down-short {
+    font-size: larger;
+}
+
+.Image-Header {
+    background-image: url("./assets/headers.svg");
+    background-color: rgba(0, 146, 71, 1);
+}
+.desc {
+    font-weight: 100;
+    margin-left: 8rem;
+    width: 400px;
+}
+div .Tablemain {
+    width: 98%;
+}
+table .cols-table {
+    background-color: rgba(226, 229, 235, 1);
+border-radius: 2rem !important;
+}
+
+table .cols-table th , td {
+    padding: 2rem;
+}
+table {
+    margin: auto;
+}
+
+#root > div > div > div.w-100 > div > div > table > tbody > tr > td {
+     padding: 2rem;
+}
+#root > div > div > div.w-100 > div > div:nth-child(3) > table > thead {
+    margin-bottom: 1rem;
+}
+#root > div > div > div.w-100 > div > div:nth-child(3) > table > thead > th:nth-child(1) {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+}
+#root > div > div > div.w-100 > div > div:nth-child(3) > table > thead > th:nth-child(3) {
+      border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+#root > div > div > div.w-100 > div > div:nth-child(3) > table > tbody > tr {
+    border-radius: 0.5rem;
+}

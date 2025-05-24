@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance, USERS_URLS } from "../../urls";
+import { EMAIL_VALIDATION } from "../../validations";
 function ForgetPassword() {
   const {
     register,
@@ -13,7 +15,7 @@ function ForgetPassword() {
 const navigate = useNavigate()
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("https://upskilling-egypt.com:3006/api/v1/Users/Reset/Request", data);
+      const response = await axiosInstance.post(USERS_URLS.FORGET_PASS, data);
       console.log("Login successful:", response.data);
       toast.success("Your request is being processed, please check your email");
 navigate("/reset-pass")
@@ -51,13 +53,7 @@ navigate("/reset-pass")
                       type="email"
                       placeholder="Enter your E-mail"
                       className="form-control bg-light py-3 border-0 shadow-none"
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                            value: "/^[a-zA-Z0-9. _%+-]+@[a-zA-Z0-9", // 
-                          message: "Invalid email format",
-                        },
-                      })}
+                      {...register("email", EMAIL_VALIDATION)}
                     />
                    
                   </div>

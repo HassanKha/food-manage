@@ -1,25 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../assets/logo.svg";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { axiosInstance, USERS_URLS } from "../../urls";
+import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from "../../validations";
 
-function Login({SaveLoginData}) {
+function Login({ SaveLoginData }) {
+  const [showPassword, setShowPassword] = useState(false); // 👈 Add state
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("https://upskilling-egypt.com:3006/api/v1/Users/Login", data);
+      const response = await axiosInstance.post(USERS_URLS.LOGIN, data);
       localStorage.setItem("token", response.data.token);
       console.log("Login successful:", response.data);
       SaveLoginData();
       toast.success("Login successful!");
-      navigate("/dashboard")
+      navigate("/dashboard");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed!");
     }
@@ -54,50 +57,59 @@ const navigate = useNavigate();
                       type="email"
                       placeholder="Enter your E-mail"
                       className="form-control bg-light py-3 border-0 shadow-none"
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                            value: "/^[a-zA-Z0-9. _%+-]+@[a-zA-Z0-9", // 
-                          message: "Invalid email format",
-                        },
-                      })}
+                      {...register("email", EMAIL_VALIDATION)}
                     />
-                   
                   </div>
-                   {errors.email && (
-                      <small className="text-danger">
-                        {errors.email.message}
-                      </small>
-                    )}
+                  {errors.email && (
+                    <small className="text-danger">
+                      {errors.email.message}
+                    </small>
+                  )}
                   <div className="input-group mb-3">
                     <span className="input-group-text">
                       <i className="fas position-relative fa-lock w-25"></i>
                     </span>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       className="form-control py-3 border-0 bg-light shadow-none"
                       style={{ boxShadow: "none", outline: "none" }}
-                      {...register("password", {
-                        required: "Password is required",
-                        minLength: {
-                          value: 6,
-                          message: "Password must be at least 6 characters",
-                        },
-                      })}
+                      {...register("password", PASSWORD_VALIDATION)}
                     />
-                  
+                    <span
+                      className="input-group-text"
+                      style={{ cursor: "pointer" }}
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // prevent input blur
+                      }}
+                      onMouseUp={(e) => {
+                        e.preventDefault(); // prevent input blur
+                      }}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                    >
+                      <i
+                        className={`fas ${
+                          showPassword ? "fa-eye-slash" : "fa-eye"
+                        }`}
+                      ></i>
+                    </span>
                   </div>
-  {errors.password && (
-                      <small className="text-danger">
-                        {errors.password.message}
-                      </small>
-                    )}
+                  {errors.password && (
+                    <small className="text-danger">
+                      {errors.password.message}
+                    </small>
+                  )}
                   <div className="d-flex justify-content-between mb-5">
-                    <a href="/register" className="text-decoration-none register-btn ">
+                    <a
+                      href="/register"
+                      className="text-decoration-none register-btn "
+                    >
                       Register Now?
                     </a>
-                    <a href="/forget-pass" className="text-decoration-none fB-btn ">
+                    <a
+                      href="/forget-pass"
+                      className="text-decoration-none fB-btn "
+                    >
                       Forgot Password?
                     </a>
                   </div>

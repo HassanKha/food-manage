@@ -1,29 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../assets/logo.svg";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance, USERS_URLS } from "../../urls";
+import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from "../../validations";
 
 function ResetPassword() {
+  const [showPassword, setShowPassword] = useState(false); // 👈 Add state
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
   } = useForm();
-const navigate = useNavigate()
+  const navigate = useNavigate();
   const password = watch("password");
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        "https://upskilling-egypt.com:3006/api/v1/Users/Reset",
-        data
-      );
+      const response = await axiosInstance.post(USERS_URLS.RESET_PASS, data);
       console.log("Reset successful:", response.data);
       toast.success("Reset successful");
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
@@ -59,17 +60,13 @@ const navigate = useNavigate()
                       type="email"
                       placeholder="E-mail"
                       className="form-control bg-light py-3 border-0 shadow-none"
-                      {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                          value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                          message: "Invalid email format",
-                        },
-                      })}
+                      {...register("email", EMAIL_VALIDATION)}
                     />
                   </div>
                   {errors.email && (
-                    <small className="text-danger">{errors.email.message}</small>
+                    <small className="text-danger">
+                      {errors.email.message}
+                    </small>
                   )}
 
                   <div className="input-group mb-3">
@@ -94,20 +91,33 @@ const navigate = useNavigate()
                       <i className="fas fa-lock w-25"></i>
                     </span>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Password"
                       className="form-control py-3 border-0 bg-light shadow-none"
-                      {...register("password", {
-                        required: "Password is required",
-                        minLength: {
-                          value: 6,
-                          message: "Password must be at least 6 characters",
-                        },
-                      })}
+                      {...register("password", PASSWORD_VALIDATION)}
                     />
+                    <span
+                      className="input-group-text"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // prevent input blur
+                      }}
+                      onMouseUp={(e) => {
+                        e.preventDefault(); // prevent input blur
+                      }}
+                    >
+                      <i
+                        className={`fas ${
+                          showPassword ? "fa-eye-slash" : "fa-eye"
+                        }`}
+                      ></i>
+                    </span>
                   </div>
                   {errors.password && (
-                    <small className="text-danger">{errors.password.message}</small>
+                    <small className="text-danger">
+                      {errors.password.message}
+                    </small>
                   )}
 
                   <div className="input-group mb-3">
@@ -115,7 +125,7 @@ const navigate = useNavigate()
                       <i className="fas fa-lock w-25"></i>
                     </span>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Confirm Password"
                       className="form-control py-3 border-0 bg-light shadow-none"
                       {...register("confirmPassword", {
@@ -124,6 +134,23 @@ const navigate = useNavigate()
                           value === password || "Passwords do not match",
                       })}
                     />
+                    <span
+                      className="input-group-text sr-only"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // prevent input blur
+                      }}
+                      onMouseUp={(e) => {
+                        e.preventDefault(); // prevent input blur
+                      }}
+                    >
+                      <i
+                        className={`fas ${
+                          showPassword ? "fa-eye-slash" : "fa-eye"
+                        }`}
+                      ></i>
+                    </span>
                   </div>
                   {errors.confirmPassword && (
                     <small className="text-danger">

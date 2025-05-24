@@ -8,11 +8,11 @@ import SideBar from "./Sidebar";
 export default function MasterLayout({LoggedData}) {
   return (
     <div>
-      <div className="d-flex">
+      <div className="d-flex overflow-x-hidden">
         <div className=" ">
           <SideBar />
         </div>
-        <div className="w-100 bg-warning">
+        <div className="w-100 ">
           <Navbar LoggedData={LoggedData} />
 
           <Outlet />

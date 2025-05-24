@@ -28,28 +28,28 @@ const navigate = useNavigate();
           </MenuItem>
 
           <MenuItem
-            icon={<i class="fa fa-home" />}
+            icon={<i className="fa fa-home" />}
             component={<Link to="/dashboard" />}
           >
             {" "}
             Home{" "}
           </MenuItem>
           <MenuItem
-            icon={<i class="fa fa-users" />}
+            icon={<i className="fa fa-users" />}
             component={<Link to="/dashboard/users" />}
           >
             {" "}
             Users{" "}
           </MenuItem>
           <MenuItem
-            icon={<i class="bi bi-fork-knife" />}
+            icon={<i className="bi bi-fork-knife" />}
             component={<Link to="/dashboard/recipes" />}
           >
             {" "}
             Recipes{" "}
           </MenuItem>
           <MenuItem
-            icon={<i class="bi bi-tags-fill" />}
+            icon={<i className="bi bi-tags-fill" />}
             component={<Link to="/dashboard/categories" />}
           >
             {" "}
@@ -62,7 +62,7 @@ const navigate = useNavigate();
             {" "}
             Change Password{" "}
           </MenuItem>
-          <MenuItem onClick={handleLogout} icon={<i class="bi bi-box-arrow-right" />}>
+          <MenuItem onClick={handleLogout} icon={<i className="bi bi-box-arrow-right" />}>
             {" "}
             Logout{" "}
           </MenuItem>
