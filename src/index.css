@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1; /* 100% */
+  letter-spacing: 0;
+}
+
 .auth-container {
     height: 100vh;
   background-image: url('../src/assets/background.png');
@@ -111,12 +121,14 @@ nav .SearchDiv {
     background-color: rgba(0, 146, 71, 1);
 }
 .desc {
-    font-weight: 100;
+    font-weight: 400;
     margin-left: 8rem;
     width: 400px;
+    font-size: 16px;
 }
 div .Tablemain {
     width: 98%;
+   
 }
 table .cols-table {
     background-color: rgba(226, 229, 235, 1);
@@ -124,7 +136,7 @@ border-radius: 2rem !important;
 }
 
 table .cols-table th , td {
-    padding: 2rem;
+    padding: 1.5rem;
 }
 table {
     margin: auto;
@@ -134,16 +146,29 @@ table {
      padding: 2rem;
 }
 #root > div > div > div.w-100 > div > div:nth-child(3) > table > thead {
-    margin-bottom: 1rem;
+    margin-bottom: 1rem !important;
 }
 #root > div > div > div.w-100 > div > div:nth-child(3) > table > thead > th:nth-child(1) {
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
 }
-#root > div > div > div.w-100 > div > div:nth-child(3) > table > thead > th:nth-child(3) {
+#root > div > div > div.w-100 > div > div:nth-child(3) > table > thead > th:last-child {
       border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
 }
 #root > div > div > div.w-100 > div > div:nth-child(3) > table > tbody > tr {
     border-radius: 0.5rem;
+}
+
+#root > div > div > div.w-100 > div > div > table > tbody > tr > td {
+border: none;
+}
+
+.recipe-header {
+    background: rgba(240, 255, 239, 1);
+
+}
+
+.ImagSize{
+    width: 200px;
 }

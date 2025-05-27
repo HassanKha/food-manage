@@ -1,8 +1,12 @@
 import React from "react";
-
+import { useLocation } from "react-router-dom";
+import Girl from "../../assets/Girl.png";
 export default function Header({ title, description, imgPath }) {
+  const {pathname} = useLocation()
+
+  console.log(pathname == '/dashboard',pathname)
   return (
-    <div className="container-fluid w-100 mx-2 my-3 rounded-2 Image-Header ">
+    <div className="container-fluid  font-poppins w-100 mx-2 my-3 rounded-2 Image-Header ">
       <div className="row text-white ">
         <div className="col-md-8 d-flex align-items-center">
         <div className="w-100">
@@ -11,7 +15,7 @@ export default function Header({ title, description, imgPath }) {
         </div>
       </div>
        <div className="col-md-4 d-flex justify-content-end">
-        <img src={imgPath} alt="header img" />
+        <img src={pathname == '/dashboard' ? Girl : imgPath} alt="header img" />
       </div>
       </div>
      

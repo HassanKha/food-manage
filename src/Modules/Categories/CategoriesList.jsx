@@ -197,13 +197,13 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
           width:"100%"
         }}
       >
-        <table className="table table-striped Tablemain  ">
+        <table className=" text-center table table-striped Tablemain  ">
           <thead className="cols-table rounded-3 my-2">
             <th>Name</th>
             <th>Creation Date</th>
             <th>Actions</th>
           </thead>
-          <tbody>
+          <tbody className={`w-100 text-center`}>
             {categories.length > 0 ? (
               categories.map((category) => (
                 <tr key={category.id}>
@@ -229,7 +229,11 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
                 </tr>
               ))
             ) : (
-              <NoData />
+               <tr>
+    <td colSpan={3}>
+      <NoData />
+    </td>
+  </tr>
             )}
           </tbody>
         </table>

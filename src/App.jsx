@@ -23,45 +23,41 @@ import UsersList from "./Modules/Users/UsersList";
 import FavList from "./Modules/Favourites/FavList";
 import { jwtDecode } from "jwt-decode";
 import ProtectedRoute from "./Modules/Shared/ProtectedRoute";
-
+import RecipesList from "./Modules/Recipes/RecipesList";
 
 function App() {
-const getInitialLoggedData = () => {
-  try {
-    const token = localStorage.getItem("token");
-    return token ? jwtDecode(token) : null;
-  } catch (err) {
-    return null;
-  }
-};
+  const getInitialLoggedData = () => {
+    try {
+      const token = localStorage.getItem("token");
+      return token ? jwtDecode(token) : null;
+    } catch (err) {
+      return null;
+    }
+  };
   const [LoggedData, setLoggedData] = useState(getInitialLoggedData);
 
   const SaveLoginData = () => {
     let encodedToken = localStorage.getItem("token");
     encodedToken = jwtDecode(encodedToken);
     setLoggedData(encodedToken);
-
-  }
-
+  };
 
   useEffect(() => {
-  if (!LoggedData) {
-    const token = localStorage.getItem("token");
+    if (!LoggedData) {
+      const token = localStorage.getItem("token");
 
-    if (token) {
-      try {
-        const decodedToken = jwtDecode(token);
-        console.log(decodedToken);
-        setLoggedData(decodedToken);
-      } catch (error) {
-        console.error("Invalid token:", error.message);
-        localStorage.removeItem("token"); // Clean up
-      
+      if (token) {
+        try {
+          const decodedToken = jwtDecode(token);
+          console.log(decodedToken);
+          setLoggedData(decodedToken);
+        } catch (error) {
+          console.error("Invalid token:", error.message);
+          localStorage.removeItem("token"); // Clean up
+        }
       }
-    } 
-  }
-}, []);
-
+    }
+  }, []);
 
   const routes = createBrowserRouter([
     {
@@ -97,7 +93,11 @@ const getInitialLoggedData = () => {
     },
     {
       path: "/dashboard",
-      element: <ProtectedRoute><MasterLayout LoggedData={LoggedData} /> </ProtectedRoute> ,
+      element: (
+        <ProtectedRoute>
+          <MasterLayout LoggedData={LoggedData} />{" "}
+        </ProtectedRoute>
+      ),
       children: [
         {
           index: true,
@@ -105,10 +105,14 @@ const getInitialLoggedData = () => {
         },
         {
           path: "recipes",
-          element: <RecipesData />,
+          element: <RecipesList />,
         },
         {
           path: "recipe-data",
+          element: <RecipesData />,
+        },
+        {
+          path: "recipe-data/:id",
           element: <RecipesData />,
         },
         {
@@ -130,9 +134,9 @@ const getInitialLoggedData = () => {
       ],
     },
     {
-  path: "*",
-  element: <Notfound />
-}
+      path: "*",
+      element: <Notfound />,
+    },
   ]);
   return (
     <>
