@@ -133,7 +133,7 @@ export default function RecipesList() {
           width: "100%",
         }}
       >
-        <table className=" text-center table table-striped Tablemain  ">
+        <table className=" font-poppins fs-6 text-center table table-striped Tablemain  ">
           <thead className="cols-table rounded-3 my-2">
             <th>Item Name</th>
             <th>Image</th>
@@ -142,10 +142,10 @@ export default function RecipesList() {
             <th>Category</th>
             <th>Actions</th>
           </thead>
-          <tbody className={`w-100 text-center`}>
+          <tbody className={`w-100   mx-auto  text-center`}>
             {Recipes.length > 0 ? (
               Recipes.map((item) => (
-                <tr key={item.id}>
+                <tr className="text-center" key={item.id}>
                   <td>{item.name}</td>
                   <td>
                     <img

@@ -50,7 +50,7 @@ function Login({ SaveLoginData }) {
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className=" input-group mb-4">
-                    <span className="input-group-text">
+                    <span className="input-group-text z-1">
                       <i className="fas position-relative fa-envelope w-25"></i>
                     </span>
                     <input
@@ -66,7 +66,7 @@ function Login({ SaveLoginData }) {
                     </small>
                   )}
                   <div className="input-group mb-3">
-                    <span className="input-group-text">
+                    <span className="input-group-text z-1">
                       <i className="fas position-relative fa-lock w-25"></i>
                     </span>
                     <input
@@ -77,7 +77,7 @@ function Login({ SaveLoginData }) {
                       {...register("password", PASSWORD_VALIDATION)}
                     />
                     <span
-                      className="input-group-text"
+                      className="input-group-text z-1"
                       style={{ cursor: "pointer" }}
                       onMouseDown={(e) => {
                         e.preventDefault(); // prevent input blur

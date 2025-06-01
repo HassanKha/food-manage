@@ -6,16 +6,22 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance, USERS_URLS } from "../../urls";
 import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from "../../validations";
+import { useLocation } from "react-router-dom";
 
 function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false); // 👈 Add state
+const location = useLocation();
+const email = location.state?.email || "";
 
+console.log(email)
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+  defaultValues: { email }
+});
   const navigate = useNavigate();
   const password = watch("password");
 
@@ -42,7 +48,7 @@ function ResetPassword() {
                 alt="food-logo"
               />
 
-              <div className="d-flex mx-5 my-5 justify-content-center align-content-center flex-column">
+              <div className="d-flex mx-5 my-4 justify-content-center align-content-center flex-column">
                 <div className="log-title">
                   Forgot Your Password?
                   <p className="Wel-title">
@@ -51,10 +57,10 @@ function ResetPassword() {
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <div className="input-group mb-3">
-                    <span className="input-group-text">
-                      <i className="fas fa-envelope w-25"></i>
+                <form  onSubmit={handleSubmit(onSubmit)}>
+                  <div className="input-group mb-4">
+                    <span className="input-group-text z-1">
+                      <i className="fas fa-envelope w-25"    aria-label="Email icon"></i>
                     </span>
                     <input
                       type="email"
@@ -69,9 +75,9 @@ function ResetPassword() {
                     </small>
                   )}
 
-                  <div className="input-group mb-3">
-                    <span className="input-group-text">
-                      <i className="fas fa-lock w-25"></i>
+                  <div className="input-group mb-4">
+                    <span className="input-group-text z-1">
+                      <i className="fas fa-lock w-25"   aria-label="Lock icon"></i>
                     </span>
                     <input
                       type="text"
@@ -86,9 +92,9 @@ function ResetPassword() {
                     <small className="text-danger">{errors.seed.message}</small>
                   )}
 
-                  <div className="input-group mb-3">
-                    <span className="input-group-text">
-                      <i className="fas fa-lock w-25"></i>
+                  <div className="input-group mb-4">
+                    <span className="input-group-text z-1">
+                      <i className="fas fa-lock w-25"   aria-label="Lock icon"></i>
                     </span>
                     <input
                       type={showPassword ? "text" : "password"}
@@ -97,7 +103,8 @@ function ResetPassword() {
                       {...register("password", PASSWORD_VALIDATION)}
                     />
                     <span
-                      className="input-group-text"
+                      className="input-group-text z-1"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                       style={{ cursor: "pointer" }}
                       onClick={() => setShowPassword((prev) => !prev)}
                       onMouseDown={(e) => {
@@ -120,8 +127,8 @@ function ResetPassword() {
                     </small>
                   )}
 
-                  <div className="input-group mb-3">
-                    <span className="input-group-text">
+                  <div className="input-group mb-4">
+                    <span className="input-group-text z-1">
                       <i className="fas fa-lock w-25"></i>
                     </span>
                     <input
@@ -134,8 +141,9 @@ function ResetPassword() {
                           value === password || "Passwords do not match",
                       })}
                     />
-                    <span
-                      className="input-group-text sr-only"
+                  <span
+                      className="input-group-text z-1"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                       style={{ cursor: "pointer" }}
                       onClick={() => setShowPassword((prev) => !prev)}
                       onMouseDown={(e) => {

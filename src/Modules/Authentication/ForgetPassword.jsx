@@ -18,7 +18,7 @@ const navigate = useNavigate()
       const response = await axiosInstance.post(USERS_URLS.FORGET_PASS, data);
       console.log("Login successful:", response.data);
       toast.success("Your request is being processed, please check your email");
-navigate("/reset-pass")
+navigate("/reset-pass", { state: { email: data.email } })
     } catch (error) {
       toast.error(error.response?.data?.message);
     }
@@ -46,7 +46,7 @@ navigate("/reset-pass")
 
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className=" input-group mb-5">
-                    <span className="input-group-text">
+                    <span className="input-group-text z-1">
                       <i className="fas position-relative fa-envelope w-25"></i>
                     </span>
                     <input
@@ -64,16 +64,20 @@ navigate("/reset-pass")
                     )}
              
 
-                  <button
-                    type="submit"
-                    className="btn btn-success login-btn w-100 py-2"
-                    style={{
-                      backgroundColor: "#4CAF50",
-                      borderColor: "#4CAF50",
-                    }}
-                  >
-                    Login
-                  </button>
+               <button
+  type="submit"
+  className="btn btn-success login-btn w-100 py-2"
+  disabled={isSubmitting}
+  style={{
+    backgroundColor: "#4CAF50",
+    borderColor: "#4CAF50",
+    opacity: isSubmitting ? 0.7 : 1,
+    cursor: isSubmitting ? "not-allowed" : "pointer",
+  }}
+>
+  {isSubmitting ? "Sending..." : "Send Reset Link"}
+</button>
+
                 </form>
               </div>
             </div>

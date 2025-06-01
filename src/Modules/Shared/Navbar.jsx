@@ -5,33 +5,49 @@ import headers from "../../assets/headers.svg";
 export default function Navbar({LoggedData}) {
   return (
  <nav className="navbar px-5 mx-3 py-3 rounded-4 mt-3 navbar-expand-lg navbar-light bg-light">
-   <form className="d-flex SearchDiv justify-content-center align-items-center w-75" role="search">
-    <i className="bi bi-search mx-2"></i>
-      <input className="form-control me-2 searchInput " type="search" placeholder="Search Here" aria-label="Search"/>
       
-    </form>
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
+      {/* Search Form */}
+      <form className="d-flex SearchDiv justify-content-center align-items-center w-75" role="search">
+        <i className="bi bi-search mx-2"></i>
+        <input
+          className="form-control me-2 searchInput"
+          type="search"
+          placeholder="Search Here"
+          aria-label="Search"
+        />
+      </form>
 
-  <div className="collapse navbar-collapse w-25 d-flex justify-content-center  align-items-center" id="navbarSupportedContent">
-    <ul className="navbar-nav d-flex justify-content-center w-100  align-items-center ">
-   
-      <li className="nav-item active d-flex justify-content-evenly w-100 align-items-center">
-        <div className='d-flex justify-content-center  align-items-center'>
+      {/* Toggler for small screens */}
+      <button
+        className="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse" // Bootstrap 5
+        data-bs-target="#navbarProfileSection"
+        aria-controls="navbarProfileSection"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span className="navbar-toggler-icon"></span>
+      </button>
 
-                    <img src={profileIcon} alt={"profile"}/>
-        <a className="nav-link" href="#"> {LoggedData?.userName ? LoggedData.userName : "Loading..."}<span className="sr-only">(current)</span></a> 
-        </div>
-
-
-        <i className="bi bi-arrow-down-short "></i>
-   <i className="bi bi-bell-fill"></i>
-      </li>
-   
-    </ul>
-
-  </div>
-</nav>
+      {/* Collapsible Profile Section */}
+      <div
+        className="collapse navbar-collapse w-25 d-lg-flex justify-content-center align-items-center"
+        id="navbarProfileSection"
+      >
+        <ul className="navbar-nav d-flex justify-content-center w-100 align-items-center">
+          <li className="nav-item active d-flex justify-content-evenly w-100 align-items-center">
+            <div className="d-flex justify-content-center align-items-center">
+              <img src={profileIcon} alt="profile" />
+              <a className="nav-link" href="#">
+                {LoggedData?.userName ? LoggedData.userName : "Loading..."}
+              </a>
+            </div>
+            <i className="bi bi-arrow-down-short"></i>
+            <i className="bi bi-bell-fill ms-2"></i>
+          </li>
+        </ul>
+      </div>
+    </nav>
   )
 }

@@ -7,6 +7,9 @@
   line-height: 1; /* 100% */
   letter-spacing: 0;
 }
+.custom-text {
+  font-family: 'Inter', sans-serif;
+}
 
 .auth-container {
     height: 100vh;
@@ -72,13 +75,22 @@ height: 100vh;
 .sidebar-cont .ps-menu-button{
     color: #fff !important;
 }
-.sidebar-cont .ps-menuitem-root .ps-menu-button:hover{
-    background-color: rgba(0,146,77,0.1);
-    border-left: 4px solid rgba(0,146,77,1);
+.sidebar-cont .ps-menuitem-root:not(:first-child) .ps-menu-button:hover {
+  background-color: rgba(0, 146, 77, 0.1);
+  border-left: 4px solid rgba(0, 146, 77, 1);
+}
+
+.sidebar-cont .ps-menuitem-root:first-child .ps-menu-button {
+  transition: transform 0.3s ease;
+}
+
+.sidebar-cont .ps-menuitem-root:first-child .ps-menu-button:hover {
+  transform: scale(1.2);
+
 }
 .sidebar-cont .ps-menuitem-root .ps-menu-button img{
-  width: 80px;
-  length: 100px;
+  width: 120px;
+
 }
 .sidebar-cont .sidebar-logo a:hover{
     background-color: transparent !important;
@@ -165,10 +177,27 @@ border: none;
 }
 
 .recipe-header {
-    background: rgba(240, 255, 239, 1);
+    background: rgba(240, 255, 239, 1)
 
 }
 
 .ImagSize{
     width: 200px;
+}
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease, outline 0.2s ease;
+}
+
+.btn-icon:hover {
+  transform: scale(1.2);
+}
+
+.btn-icon:focus {
+  outline: 2px solid #4CAF50;
+  outline-offset: 2px;
+  border-radius: 4px;
 }

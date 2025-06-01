@@ -114,7 +114,7 @@ console.log(res.data,'h')
   return (
     <>
 
-      <div className="container recipe-header p-4">
+      <div className="container recipe-header mt-2 mb-5 rounded-2 p-4">
         <div className="row">
           <div className="col-md-8 d-flex align-items-center">
             <div>

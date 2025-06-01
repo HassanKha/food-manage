@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import DeleteConfirmation from "../Shared/DeleteConfirmation";
 import { useForm } from "react-hook-form";
 import { axiosInstance, CATEGORIES_URLS } from "../../urls";
+import { toast } from "react-toastify";
 export default function CategoriesList() {
   let {
     register,
@@ -46,6 +47,7 @@ export default function CategoriesList() {
       setCategories(response.data.data);
     } catch (error) {
       console.log(error);
+            toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
   const [viewCategory, setViewCategory] = useState(null);
@@ -66,10 +68,12 @@ export default function CategoriesList() {
 CATEGORIES_URLS.DELETE_CATEGORY(catID)  
       );
       console.log(response);
+        toast.success("Deleted success");
       handleClose();
       getAllcategories();
     } catch (error) {
       console.log(error);
+            toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -89,6 +93,7 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
           data
         );
         console.log("Edit success", response);
+        toast.success("Edit success");
       } else {
         // Add mode
         const response = await axiosInstance.post(
@@ -96,12 +101,14 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
           data
         );
         console.log("Add success", response);
+         toast.success("Add success");
       }
 
       handleAdd(); // hide modal
       getAllcategories(5,1); // refresh list
     } catch (error) {
       console.log(error);
+            toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -109,6 +116,27 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
     getAllcategories(3,1);
   }, []);
 
+
+  function formatDate(isoString) {
+  const date = new Date(isoString);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+useEffect(() => {
+  if (showAdd) {
+    if (isEdit) {
+      // Already handled in handleShowEdit
+    } else {
+      reset({ name: "" }); // Clear form when not editing
+    }
+  }
+}, [showAdd, isEdit, reset]);
   return (
     <div className="w-100">
       <Header
@@ -169,7 +197,7 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
                   <strong>Name:</strong> {viewCategory.name}
                 </p>
                 <p>
-                  <strong>Created At:</strong> {viewCategory.creationDate}
+                  <strong>Created At:</strong> {formatDate(viewCategory.creationDate)}
                 </p>
               </>
             )}
@@ -197,7 +225,7 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
           width:"100%"
         }}
       >
-        <table className=" text-center table table-striped Tablemain  ">
+        <table className=" font-poppins fs-6 text-center table table-striped Tablemain  ">
           <thead className="cols-table rounded-3 my-2">
             <th>Name</th>
             <th>Creation Date</th>
@@ -208,23 +236,31 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
               categories.map((category) => (
                 <tr key={category.id}>
                   <td>{category.name}</td>
-                  <td>{category.creationDate}</td>
+                  <td>{formatDate(category.creationDate)}</td>
                   <td>
-                    <i
-                      className="bi bi-eye cursor-pointer"
-                      onClick={() => handleView(category)}
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      onClick={() => handleShowEdit(category)}
-                      className="bi bi-pencil-square mx-2 text-warning cursor-pointer"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      onClick={() => handleShow(category.id)}
-                      className="bi bi-trash text-danger cursor-pointer"
-                      aria-hidden="true"
-                    ></i>
+                  <button
+  onClick={() => handleView(category)}
+  className="btn-icon"
+  aria-label="View category"
+>
+  <i className="bi bi-eye"></i>
+</button>
+
+<button
+  onClick={() => handleShowEdit(category)}
+  className="btn-icon text-warning"
+  aria-label="Edit category"
+>
+  <i className="bi bi-pencil-square"></i>
+</button>
+
+<button
+  onClick={() => handleShow(category.id)}
+  className="btn-icon text-danger"
+  aria-label="Delete category"
+>
+  <i className="bi bi-trash"></i>
+</button>
                   </td>
                 </tr>
               ))

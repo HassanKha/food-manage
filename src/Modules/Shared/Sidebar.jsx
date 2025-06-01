@@ -15,12 +15,12 @@ const navigate = useNavigate();
   };
 
   return (
-    <div className="sidebar-cont">
+    <div className="sidebar-cont custom-tex">
       <Sidebar collapsed={collapsed}>
         <Menu>
           <MenuItem
             onClick={toggleCollapse}
-            className="my-5  sidebar-logo"
+            className="my-5 d-flex justify-content-center align-items-center sidebar-logo"
             component={<Link to="/dashboard" />}
           >
             {" "}
