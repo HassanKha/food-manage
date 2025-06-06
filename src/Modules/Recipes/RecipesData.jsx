@@ -16,6 +16,7 @@ const { id } = useParams();
      reset,
     formState: { errors, isSubmitting },
   } = useForm();
+const [loading,setLoading] = useState(false)
 
   const appendToFormData = (data) => {
     const formData = new FormData(); 
@@ -59,6 +60,7 @@ console.log(recipeData)
 
    const getRecipeById = async (id) => {
     try {
+      setLoading(true);
       const res = await axiosInstance.get(RECEPIE_URLS.DELETE_RECEPIE(id));
       const recipe = res.data;
 console.log(res.data,'h')
@@ -68,7 +70,7 @@ console.log(res.data,'h')
       setValue("description", recipe.description);
       setValue("categoriesIds", recipe.category[0].id); // if multiple, use array
       setValue("tagId", recipe.tag.id);
-
+setLoading(false);
         reset({
       name: recipe.name,
       price: recipe.price,
@@ -76,7 +78,9 @@ console.log(res.data,'h')
       categoriesIds: recipe.category[0]?.id || "", // or array if multiple
       tagId: recipe.tag?.id || "",
     });
+
     } catch (error) {
+      setLoading(false);
       toast.error("Failed to load recipe");
     }
   };
@@ -135,7 +139,13 @@ console.log(res.data,'h')
         </div>
       </div>
       <div className="w-75 m-auto p-2">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        {
+          loading ? <div className="w-100 d-flex h-100 mt-5 justify-content-center align-items-center"> <div
+  className="spinner-border text-success"
+  style={{ width: "5rem", height: "5rem" }}
+  role="status"
+></div></div> : 
+  <form onSubmit={handleSubmit(onSubmit)}>
           <input
             type="text"
             className={`form-control ${errors.name ? "is-invalid" : ""}`}
@@ -160,15 +170,23 @@ console.log(res.data,'h')
             <div className="text-danger">{errors.tagId.message}</div>
           )}
 
-          <input
-            type="number"
-            className={`form-control ${errors.price ? "is-invalid" : ""}`}
-            placeholder="Recipe price "
-            {...register("price", { required: "Recipe price  is required" })}
-          />
-          {errors.price && (
-            <div className="text-danger">{errors.price.message}</div>
-          )}
+         <input
+  type="number"
+  min="0"
+  step="any"
+  className={`form-control ${errors.price ? "is-invalid" : ""}`}
+  placeholder="Recipe price"
+  {...register("price", {
+    required: "Recipe price is required",
+    min: {
+      value: 0.01,
+      message: "Price must be a positive number",
+    },
+  })}
+/>
+{errors.price && (
+  <div className="text-danger">{errors.price.message}</div>
+)}
 
           <select
             className="form-control my-2"
@@ -212,6 +230,8 @@ console.log(res.data,'h')
             </button>
           </div>
         </form>
+        }
+     
       </div>
     </>
   );

@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 export default function RecipesList() {
   const [viewRecipe, setViewRecipe] = useState(null);
   const [showView, setShowView] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const handleView = (category) => {
     setViewRecipe(category);
     setShowView(true);
@@ -33,12 +33,15 @@ export default function RecipesList() {
   const navigate = useNavigate();
   const getAllRecipes = async (pageSize, pageNumber) => {
     try {
+      setLoading(true);
       let response = await axiosInstance.get(RECEPIE_URLS.GET_RECEPIES, {
         params: { pageSize, pageNumber },
       });
       console.log(response);
       setRecipes(response.data.data);
+          setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -133,57 +136,82 @@ export default function RecipesList() {
           width: "100%",
         }}
       >
-        <table className=" font-poppins fs-6 text-center table table-striped Tablemain  ">
-          <thead className="cols-table rounded-3 my-2">
-            <th>Item Name</th>
-            <th>Image</th>
-            <th>Description</th>
-            <th>Tag</th>
-            <th>Category</th>
-            <th>Actions</th>
-          </thead>
-          <tbody className={`w-100   mx-auto  text-center`}>
-            {Recipes.length > 0 ? (
-              Recipes.map((item) => (
-                <tr className="text-center" key={item.id}>
-                  <td>{item.name}</td>
-                  <td>
-                    <img
-                      className="rounded ImagSize"
-                      src={ImageURL + item.imagePath}
-                    />
-                  </td>
-                  <td>{item.description}</td>
-                  <td>{item.tag.name}</td>
-                  <td>{item.category[0].name}</td>
-                  <td>
-                    <i
-                      className="bi bi-eye cursor-pointer"
-                      onClick={() => handleView(item)}
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      onClick={() => navigate(`/dashboard/recipe-data/${item.id}`)}
-                      className="bi bi-pencil-square mx-2 text-warning cursor-pointer"
-                      aria-hidden="true"
-                    ></i>
-                    <i
-                      onClick={() => handleShow(item.id)}
-                      className="bi bi-trash text-danger cursor-pointer"
-                      aria-hidden="true"
-                    ></i>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3}>
-                  <NoData />
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {loading ? (
+  <div className="w-100 d-flex justify-content-center align-items-center" style={{ minHeight: "300px" }}>
+    <div
+      className="spinner-border text-success"
+      style={{ width: "4rem", height: "4rem" }}
+      role="status"
+    ></div>
+  </div>
+) : (
+  <table className="w-100 font-poppins fs-6 text-center table table-striped Tablemain">
+    <thead className="cols-table rounded-3 my-2">
+      <tr>
+        <th>Item Name</th>
+        <th>Image</th>
+        <th>Description</th>
+        <th>Tag</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {Recipes.length > 0 ? (
+        Recipes.map((item) => (
+          <tr className="text-center" key={item.id}>
+            <td>{item.name}</td>
+            <td>
+              {item.imagePath ? (
+                <img
+                  className="rounded ImagSize"
+                  src={ImageURL + item.imagePath}
+                  alt={item.name}
+                />
+              ) : (
+                <i
+                  className="bi bi-image text-muted fs-1"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    lineHeight: "100px",
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: "8px",
+                    display: "inline-block",
+                  }}
+                ></i>
+              )}
+            </td>
+            <td>{item.description}</td>
+            <td>{item.tag.name}</td>
+            <td>{item.category[0].name}</td>
+            <td>
+              <i
+                className="bi bi-eye cursor-pointer"
+                onClick={() => handleView(item)}
+              ></i>
+              <i
+                onClick={() => navigate(`/dashboard/recipe-data/${item.id}`)}
+                className="bi bi-pencil-square mx-2 text-warning cursor-pointer"
+              ></i>
+              <i
+                onClick={() => handleShow(item.id)}
+                className="bi bi-trash text-danger cursor-pointer"
+              ></i>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan={6}>
+            <NoData />
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+)}
+
       </div>
     </div>
   );
