@@ -12,6 +12,8 @@ export default function UsersList() {
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [userID, setuserid] = useState(0);
+   const [Pages, setArrayOfPages] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
   const handleClose = () => setShow(false);
   const handleShow = (id) => {
     setuserid(id);
@@ -30,22 +32,24 @@ export default function UsersList() {
     setViewUser(null);
     setShowView(false);
   };
-  const getAllusers = async (pageSize, pageNumber) => {
+  const getAllusers = async (pageSize, pageNumber,userName) => {
     try {
       setLoading(true);
       let response = await axiosInstance.get(USERS_URLS.GET_USERS, {
-        params: { pageSize, pageNumber },
+        params: { pageSize, pageNumber,userName },
       });
       console.log(response);
       setUsers(response.data.data);
       setLoading(false);
+           setArrayOfPages(Array(response.data.totalNumberOfPages).fill().map((_, index) => index + 1));
+       setCurrentPage(pageNumber); 
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
   };
   useEffect(() => {
-    getAllusers(3, 1);
+    getAllusers(2, 1,"");
   }, []);
 
   const deleteUser = async () => {
@@ -60,6 +64,12 @@ export default function UsersList() {
       console.log(error);
     }
   };
+
+  const SearchFor = (e) => {
+
+getAllusers(2,1,e.target.value);
+
+}
 
   return (
     <div>
@@ -110,7 +120,12 @@ export default function UsersList() {
           <p>You can check all details</p>
         </div>
       </div>
-
+    <input
+         onChange={SearchFor}
+                  type="text"
+                  placeholder="Search for ..."
+                  className="form-control mx-2 rounded-2  bg-light py-3 border-0 shadow-none"
+                   />
       <div
         style={{
           maxHeight: "calc(100vh - 450px)", // adjust based on your header/footer height
@@ -170,6 +185,57 @@ export default function UsersList() {
             </tbody>
           </table>
         )}
+        {
+          Users.length !== 0 &&
+           <nav className="mx-2" aria-label="Page navigation example">
+          <ul class="pagination">
+         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+              <button
+                className="page-link"
+                onClick={() => {
+                  if (currentPage > 1) {
+                    getAllusers(2, currentPage - 1);
+                  }
+                }}
+              >
+                Previous
+              </button>
+            </li>
+        
+           {Pages.filter(page =>
+              page === 1 ||
+              page === Pages.length ||
+              Math.abs(page - currentPage) <= 2
+            ).map((page, index, arr) => {
+              const prevPage = arr[index - 1];
+              const isEllipsis = prevPage && page - prevPage > 1;
+        
+              return (
+                <React.Fragment key={page}>
+                  {isEllipsis && <li className="page-item disabled"><span className="page-link">...</span></li>}
+                  <li className={`page-item ${currentPage === page ? "active" : ""}`}>
+                    <button className="page-link" onClick={() => getAllusers(2, page)}>{page}</button>
+                  </li>
+                </React.Fragment>
+              );
+            })}
+        
+           <li className={`page-item ${currentPage === Pages.length ? 'disabled' : ''}`}>
+              <button
+                className="page-link"
+                onClick={() => {
+                  if (currentPage < Pages.length) {
+                    getAllusers(2, currentPage + 1);
+                  }
+                }}
+              >
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
+        }
+           
       </div>
     </div>
   );

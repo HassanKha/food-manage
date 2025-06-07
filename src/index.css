@@ -182,7 +182,9 @@ border: none;
 }
 
 .ImagSize{
-    width: 200px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
 .btn-icon {
   background: none;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logo from "../../assets/header.png";
 import Header from "../Shared/Header";
-import { axiosInstance, ImageURL, RECEPIE_URLS } from "../../urls";
+import { axiosInstance, CATEGORIES_URLS, ImageURL, RECEPIE_URLS, TAGS_URLS } from "../../urls";
 import NoData from "../Shared/NoData";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
@@ -10,9 +10,13 @@ import DeleteConfirmation from "../Shared/DeleteConfirmation";
 import { toast } from "react-toastify";
 
 export default function RecipesList() {
+    const [Tags, setTags] = useState([]);
+    const [Categories, setCategories] = useState([]);
   const [viewRecipe, setViewRecipe] = useState(null);
   const [showView, setShowView] = useState(false);
   const [loading, setLoading] = useState(false);
+    const [Pages, setArrayOfPages] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
   const handleView = (category) => {
     setViewRecipe(category);
     setShowView(true);
@@ -31,15 +35,17 @@ export default function RecipesList() {
   };
   const [Recipes, setRecipes] = useState([]);
   const navigate = useNavigate();
-  const getAllRecipes = async (pageSize, pageNumber) => {
+  const getAllRecipes = async (pageSize, pageNumber,name,tagId,categoryId) => {
     try {
       setLoading(true);
       let response = await axiosInstance.get(RECEPIE_URLS.GET_RECEPIES, {
-        params: { pageSize, pageNumber },
+        params: { pageSize, pageNumber,name,tagId ,categoryId},
       });
       console.log(response);
       setRecipes(response.data.data);
           setLoading(false);
+                setArrayOfPages(Array(response.data.totalNumberOfPages).fill().map((_, index) => index + 1));
+       setCurrentPage(pageNumber); 
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -54,19 +60,61 @@ export default function RecipesList() {
       console.log(response.data);
       toast.success("deleted sucess");
       handleClose();
-      getAllRecipes(5, 1);
+      getAllRecipes(2, 1);
     } catch (error) {
       console.log(error);
       toast.success(error.response?.data?.message);
     }
   };
+const [inputName,setInput]=useState("");
 
   useEffect(() => {
-    getAllRecipes(3, 1);
+    getAllRecipes(2, 1,"");
+     getAlltags();
+       getAllCategories(10,1);
   }, []);
 
+  let getAlltags = async () => {
+    try {
+      const response = await axiosInstance.get(TAGS_URLS.GET_TAGS);
+
+      console.log(response.data);
+      setTags(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  let getAllCategories = async () => {
+    try {
+      const response = await axiosInstance.get(CATEGORIES_URLS.GET_CATEGORIES);
+
+      console.log(response.data);
+      setCategories(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+const [inputCat,setInputCat]=useState("");
+const [inputTag,setInputTag]=useState("");
+ const  GetTag =(e) => {
+  setInputTag(e.target.value);
+getAllRecipes(2,1,inputName,e.target.value,inputCat);
+
+ }
+
+ const  GetCat=(e) => {
+  setInputCat(e.target.value);
+getAllRecipes(2,1,inputName,inputTag,e.target.value);
+ }
+
+   const SearchFor = (e) => {
+setInput(e.target.value);
+getAllRecipes(2,1,e.target.value,inputTag,inputCat);
+
+}
   return (
-    <div>
+    <div >
       <Header
         imgPath={logo}
         title={"Recipes Items"}
@@ -74,7 +122,7 @@ export default function RecipesList() {
           "You can now add your items that any user can order it from the Application and you can edit"
         }
       />
-      <div className="title  d-flex justify-content-between p-4 align-items-center">
+      <div className="title  d-flex justify-content-between p-3 align-items-center">
         <div className="d-flex flex-column">
           <h3>Recipe Table Details</h3>
           <p>You can check all details</p>
@@ -129,6 +177,44 @@ export default function RecipesList() {
           </Button>
         </Modal.Footer>
       </Modal>
+      <div className="row mb-2 d-flex
+      ">
+        <div className="col-md-6">
+           <input
+         onChange={SearchFor}
+                  type="text"
+                  placeholder="Search for ..."
+                  className="form-control  mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
+                   />
+        </div>
+  <div className="col-md-3">
+     <select
+            className="form-control   mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
+     onChange={GetTag}
+          >
+            <option value="">Select Tag</option>
+            {Tags.map((tag) => (
+              <option value={tag.id}>{tag.name}</option>
+            ))}
+          </select>
+  </div>
+    <div className="col-md-3">
+ <select onChange={GetCat}
+            className="form-control  mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
+           
+          >
+              <option value="">Select Category</option>
+            {Categories.length > 0 &&
+              Categories.map((cat) => (
+                <option value={cat.id}>{cat.name}</option>
+              ))}
+          </select>
+    </div>
+      
+                    
+
+      </div>
+        
       <div
         style={{
           maxHeight: "calc(100vh - 450px)", // adjust based on your header/footer height
@@ -210,7 +296,58 @@ export default function RecipesList() {
       )}
     </tbody>
   </table>
+  
 )}
+{
+  Recipes.length !== 0 &&
+   <nav className="mx-2" aria-label="Page navigation example">
+  <ul class="pagination">
+ <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+      <button
+        className="page-link"
+        onClick={() => {
+          if (currentPage > 1) {
+            getAllRecipes(2, currentPage - 1);
+          }
+        }}
+      >
+        Previous
+      </button>
+    </li>
+
+   {Pages.filter(page =>
+      page === 1 ||
+      page === Pages.length ||
+      Math.abs(page - currentPage) <= 2
+    ).map((page, index, arr) => {
+      const prevPage = arr[index - 1];
+      const isEllipsis = prevPage && page - prevPage > 1;
+
+      return (
+        <React.Fragment key={page}>
+          {isEllipsis && <li className="page-item disabled"><span className="page-link">...</span></li>}
+          <li className={`page-item ${currentPage === page ? "active" : ""}`}>
+            <button className="page-link" onClick={() => getAllRecipes(2, page)}>{page}</button>
+          </li>
+        </React.Fragment>
+      );
+    })}
+
+   <li className={`page-item ${currentPage === Pages.length ? 'disabled' : ''}`}>
+      <button
+        className="page-link"
+        onClick={() => {
+          if (currentPage < Pages.length) {
+            getAllRecipes(2, currentPage + 1);
+          }
+        }}
+      >
+        Next
+      </button>
+    </li>
+  </ul>
+</nav>
+}
 
       </div>
     </div>

@@ -18,6 +18,9 @@ export default function CategoriesList() {
   } = useForm();
 
   const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+  const [Pages, setArrayOfPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [show, setShow] = useState(false);
   const [catID, setCatid] = useState(0);
   const handleClose = () => setShow(false);
@@ -38,16 +41,21 @@ export default function CategoriesList() {
   const [isEdit, setIsEdit] = useState(false);
   const [editID, setEditID] = useState(null);
 
-  const getAllcategories = async (pageSize,pageNumber) => {
+  const getAllcategories = async (pageSize,pageNumber,name) => {
     try {
+      setLoading(true);
       let response = await axiosInstance.get(CATEGORIES_URLS.GET_CATEGORIES, {
-        params: { pageSize, pageNumber },
+        params: { pageSize, pageNumber,name },
       });
       console.log(response);
       setCategories(response.data.data);
+      setArrayOfPages(Array(response.data.totalNumberOfPages).fill().map((_, index) => index + 1));
+       setCurrentPage(pageNumber); 
+      setLoading(false);
     } catch (error) {
       console.log(error);
             toast.error(error.response?.data?.message || "Something went wrong");
+      setLoading(false);
     }
   };
   const [viewCategory, setViewCategory] = useState(null);
@@ -113,7 +121,7 @@ CATEGORIES_URLS.DELETE_CATEGORY(catID)
   };
 
   useEffect(() => {
-    getAllcategories(3,1);
+    getAllcategories(2,1,"");
   }, []);
 
 
@@ -137,6 +145,14 @@ useEffect(() => {
     }
   }
 }, [showAdd, isEdit, reset]);
+const [input,setInput]=useState("");
+
+
+const SearchFor = (e) => {
+  setInput(e.target.value);
+getAllcategories(2,1,e.target.value);
+
+}
   return (
     <div className="w-100">
       <Header
@@ -218,6 +234,12 @@ useEffect(() => {
           Add new category
         </button>
       </div>
+         <input
+         onChange={SearchFor}
+                  type="text"
+                  placeholder="Search for ..."
+                  className="form-control bg-light mx-2 rounded-2  py-3 border-0 shadow-none"
+                   />
       <div
         style={{
           maxHeight: "calc(100vh - 450px)", // adjust based on your header/footer height
@@ -225,7 +247,18 @@ useEffect(() => {
           width:"100%"
         }}
       >
-        <table className=" font-poppins fs-6 text-center table table-striped Tablemain  ">
+           {loading ? (
+          <div
+            className="w-100 d-flex justify-content-center align-items-center"
+            style={{ minHeight: "300px" }}
+          >
+            <div
+              className="spinner-border text-success"
+              style={{ width: "4rem", height: "4rem" }}
+              role="status"
+            ></div>
+          </div>
+        ) :       <table className=" font-poppins fs-6 text-center table table-striped Tablemain  ">
           <thead className="cols-table rounded-3 my-2">
             <th>Name</th>
             <th>Creation Date</th>
@@ -272,16 +305,60 @@ useEffect(() => {
   </tr>
             )}
           </tbody>
-        </table>
-        <nav aria-label="Page p navigation example">
+        </table> }
+  
+        {
+          categories.length !==0 &&
+           <nav className="mx-2" aria-label="Page navigation example">
   <ul class="pagination">
-    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+ <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+      <button
+        className="page-link"
+        onClick={() => {
+          if (currentPage > 1) {
+            getAllcategories(2, currentPage - 1);
+          }
+        }}
+      >
+        Previous
+      </button>
+    </li>
+
+   {Pages.filter(page =>
+      page === 1 ||
+      page === Pages.length ||
+      Math.abs(page - currentPage) <= 2
+    ).map((page, index, arr) => {
+      const prevPage = arr[index - 1];
+      const isEllipsis = prevPage && page - prevPage > 1;
+
+      return (
+        <React.Fragment key={page}>
+          {isEllipsis && <li className="page-item disabled"><span className="page-link">...</span></li>}
+          <li className={`page-item ${currentPage === page ? "active" : ""}`}>
+            <button className="page-link" onClick={() => getAllcategories(2, page)}>{page}</button>
+          </li>
+        </React.Fragment>
+      );
+    })}
+
+   <li className={`page-item ${currentPage === Pages.length ? 'disabled' : ''}`}>
+      <button
+        className="page-link"
+        onClick={() => {
+          if (currentPage < Pages.length) {
+            getAllcategories(2, currentPage + 1);
+          }
+        }}
+      >
+        Next
+      </button>
+    </li>
   </ul>
 </nav>
+
+        }
+       
       </div>
     </div>
   );
