@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useContext } from "react";
 import profileIcon from "../../assets/profileIcon.png";
 import headers from "../../assets/headers.svg";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function Navbar({LoggedData}) {
+export default function Navbar() {
+  let { LoggedData } = useContext(AuthContext);
   return (
- <nav className="navbar px-5 mx-3 py-3 rounded-4 mt-3 navbar-expand-lg navbar-light bg-light">
-      
+    <nav className="navbar px-5 mx-3 py-3 rounded-4 mt-3 navbar-expand-lg navbar-light bg-light">
       {/* Search Form */}
-      <form className="d-flex SearchDiv justify-content-center align-items-center w-75" role="search">
+      <form
+        className="d-flex SearchDiv justify-content-center align-items-center w-75"
+        role="search"
+      >
         <i className="bi bi-search mx-2"></i>
         <input
           className="form-control me-2 searchInput"
@@ -49,5 +53,5 @@ export default function Navbar({LoggedData}) {
         </ul>
       </div>
     </nav>
-  )
+  );
 }

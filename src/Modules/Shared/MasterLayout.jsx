@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import Navbar from "./Navbar";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import SideBar from "./Sidebar";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function MasterLayout({LoggedData}) {
+export default function MasterLayout() {
+      let {LoggedData} = useContext(AuthContext); // 👈 Use context to save login data
+  
   return (
     <div>
       <div className="d-flex overflow-x-hidden">
@@ -13,7 +16,7 @@ export default function MasterLayout({LoggedData}) {
           <SideBar />
         </div>
         <div className="w-100 ">
-          <Navbar LoggedData={LoggedData} />
+          <Navbar  />
 
           <Outlet />
         </div>

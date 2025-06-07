@@ -26,38 +26,7 @@ import ProtectedRoute from "./Modules/Shared/ProtectedRoute";
 import RecipesList from "./Modules/Recipes/RecipesList";
 
 function App() {
-  const getInitialLoggedData = () => {
-    try {
-      const token = localStorage.getItem("token");
-      return token ? jwtDecode(token) : null;
-    } catch (err) {
-      return null;
-    }
-  };
-  const [LoggedData, setLoggedData] = useState(getInitialLoggedData);
-
-  const SaveLoginData = () => {
-    let encodedToken = localStorage.getItem("token");
-    encodedToken = jwtDecode(encodedToken);
-    setLoggedData(encodedToken);
-  };
-
-  useEffect(() => {
-    if (!LoggedData) {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        try {
-          const decodedToken = jwtDecode(token);
-          console.log(decodedToken);
-          setLoggedData(decodedToken);
-        } catch (error) {
-          console.error("Invalid token:", error.message);
-          localStorage.removeItem("token"); // Clean up
-        }
-      }
-    }
-  }, []);
+ 
 
   const routes = createBrowserRouter([
     {
@@ -66,11 +35,11 @@ function App() {
       children: [
         {
           index: true,
-          element: <Login SaveLoginData={SaveLoginData} />,
+          element: <Login  />,
         },
         {
           path: "login",
-          element: <Login SaveLoginData={SaveLoginData} />,
+          element: <Login  />,
         },
         {
           path: "register",
@@ -95,7 +64,7 @@ function App() {
       path: "/dashboard",
       element: (
         <ProtectedRoute>
-          <MasterLayout LoggedData={LoggedData} />{" "}
+          <MasterLayout  />{" "}
         </ProtectedRoute>
       ),
       children: [

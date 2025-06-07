@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import logo from "../../assets/logo.svg";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../urls";
 import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from "../../validations";
+import { AuthContext } from "../../context/AuthContext";
 
-function Login({ SaveLoginData }) {
+function Login() {
+  let {SaveLoginData} = useContext(AuthContext); // 👈 Use context to save login data
   const [showPassword, setShowPassword] = useState(false); // 👈 Add state
   const {
     register,
