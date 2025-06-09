@@ -2,8 +2,8 @@ import React, { useContext, useState } from "react";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/navlogo.png";
-import { AuthContext } from './../../context/AuthContext';
-export default function SideBar() {
+import { AuthContext } from '../../context/AuthContext';
+export default function SideBarFM() {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapse = () => {
