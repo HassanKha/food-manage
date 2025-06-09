@@ -3,6 +3,7 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/navlogo.png";
 import { AuthContext } from '../../context/AuthContext';
+import ChangePasswordModal from "../Authentication/ChangePasswordModal";
 export default function SideBarFM() {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -16,6 +17,7 @@ const navigate = useNavigate();
   };
 
   const {LoggedData} = useContext(AuthContext);
+  const [showModal, setShowModal] = useState(false)
 
   return (
     <div className="sidebar-cont  custom-tex">
@@ -67,7 +69,8 @@ const navigate = useNavigate();
 }
           <MenuItem
             icon={<i className="bi bi-lock-fill" />}
-            component={<Link to="/forget-pass" />}
+            // component={<Link to="/forget-pass" />}
+              onClick={() => setShowModal(true)}
           >
             {" "}
             Change Password{" "}
@@ -88,6 +91,7 @@ const navigate = useNavigate();
           </MenuItem>
         </Menu>
       </Sidebar>
+        <ChangePasswordModal isOpen={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }
