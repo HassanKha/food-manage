@@ -183,12 +183,14 @@ const isFavorite = (recipe) => {
           <h3>Recipe Table Details</h3>
           <p>You can check all details</p>
         </div>
+        { LoggedData?.userGroup !== "SystemUser"  && 
         <button
           className="btn py-3 btn-success"
           onClick={() => navigate("/dashboard/recipe-data")}
         >
           Add new Item
         </button>
+}
       </div>
       <Modal show={showView} onHide={handleCloseView}>
         <Modal.Header closeButton>
