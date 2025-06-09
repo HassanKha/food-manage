@@ -65,11 +65,20 @@ form .login-btn {
     font-weight: 700;
     font-size: 20px;
 }
+.d-flex .navside {
+  background-color: rgba(31, 38, 62, 1);
 
 
+}
+.sidebar-cont {
+  flex-grow: 1;
+  height: 100vh;
+}
 .sidebar-cont .ps-sidebar-container {
 background-color: rgba(31, 38, 62, 1);
 height: 100vh;
+flex-grow: 1;
+
 }
 
 .sidebar-cont .ps-menu-button{

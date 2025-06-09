@@ -30,7 +30,7 @@ export default function AuthContextProvider({ children }) {
       if (token) {
         try {
           const decodedToken = jwtDecode(token);
-          console.log(decodedToken);
+          console.log(decodedToken,'f');
           setLoggedData(decodedToken);
         } catch (error) {
           console.error("Invalid token:", error.message);

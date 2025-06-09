@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logo from "../../assets/header.png";
 import Header from "../Shared/Header";
-import { axiosInstance, CATEGORIES_URLS, ImageURL, RECEPIE_URLS, TAGS_URLS } from "../../urls";
+import {
+  axiosInstance,
+  CATEGORIES_URLS,
+  FAVS_URLS,
+  ImageURL,
+  RECEPIE_URLS,
+  TAGS_URLS,
+} from "../../urls";
 import NoData from "../Shared/NoData";
 import { useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import DeleteConfirmation from "../Shared/DeleteConfirmation";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function RecipesList() {
-    const [Tags, setTags] = useState([]);
-    const [Categories, setCategories] = useState([]);
+  const [Tags, setTags] = useState([]);
+  const { LoggedData } = useContext(AuthContext);
+  const [Categories, setCategories] = useState([]);
   const [viewRecipe, setViewRecipe] = useState(null);
   const [showView, setShowView] = useState(false);
   const [loading, setLoading] = useState(false);
-    const [Pages, setArrayOfPages] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [Favloading, setFavLoading] = useState(false);
+  const [Pages, setArrayOfPages] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const handleView = (category) => {
     setViewRecipe(category);
     setShowView(true);
@@ -35,17 +45,27 @@ export default function RecipesList() {
   };
   const [Recipes, setRecipes] = useState([]);
   const navigate = useNavigate();
-  const getAllRecipes = async (pageSize, pageNumber,name,tagId,categoryId) => {
+  const getAllRecipes = async (
+    pageSize,
+    pageNumber,
+    name,
+    tagId,
+    categoryId
+  ) => {
     try {
       setLoading(true);
       let response = await axiosInstance.get(RECEPIE_URLS.GET_RECEPIES, {
-        params: { pageSize, pageNumber,name,tagId ,categoryId},
+        params: { pageSize, pageNumber, name, tagId, categoryId },
       });
       console.log(response);
       setRecipes(response.data.data);
-          setLoading(false);
-                setArrayOfPages(Array(response.data.totalNumberOfPages).fill().map((_, index) => index + 1));
-       setCurrentPage(pageNumber); 
+      setLoading(false);
+      setArrayOfPages(
+        Array(response.data.totalNumberOfPages)
+          .fill()
+          .map((_, index) => index + 1)
+      );
+      setCurrentPage(pageNumber);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -66,12 +86,12 @@ export default function RecipesList() {
       toast.success(error.response?.data?.message);
     }
   };
-const [inputName,setInput]=useState("");
+  const [inputName, setInput] = useState("");
 
   useEffect(() => {
-    getAllRecipes(2, 1,"");
-     getAlltags();
-       getAllCategories(10,1);
+    getAllRecipes(2, 1, "");
+    getAlltags();
+    getAllCategories(10, 1);
   }, []);
 
   let getAlltags = async () => {
@@ -95,26 +115,39 @@ const [inputName,setInput]=useState("");
       console.log(error);
     }
   };
-const [inputCat,setInputCat]=useState("");
-const [inputTag,setInputTag]=useState("");
- const  GetTag =(e) => {
-  setInputTag(e.target.value);
-getAllRecipes(2,1,inputName,e.target.value,inputCat);
+  const [inputCat, setInputCat] = useState("");
+  const [inputTag, setInputTag] = useState("");
+  const GetTag = (e) => {
+    setInputTag(e.target.value);
+    getAllRecipes(2, 1, inputName, e.target.value, inputCat);
+  };
 
- }
+  const GetCat = (e) => {
+    setInputCat(e.target.value);
+    getAllRecipes(2, 1, inputName, inputTag, e.target.value);
+  };
 
- const  GetCat=(e) => {
-  setInputCat(e.target.value);
-getAllRecipes(2,1,inputName,inputTag,e.target.value);
- }
+  const SearchFor = (e) => {
+    setInput(e.target.value);
+    getAllRecipes(2, 1, e.target.value, inputTag, inputCat);
+  };
 
-   const SearchFor = (e) => {
-setInput(e.target.value);
-getAllRecipes(2,1,e.target.value,inputTag,inputCat);
-
-}
+  const AddtoFav = async (recipeId) => {
+    console.log(recipeId)
+    try {
+     setFavLoading(true);
+      let response = await axiosInstance.post(FAVS_URLS.CREATE_RECEPIE, {recipeId} );
+      console.log(response);
+        toast.success("added to favorites successfully");
+        setFavLoading(false);
+    } catch (error) {
+      console.log(error);
+      setFavLoading(false);
+        toast.success(error.response?.data?.message);
+    }
+  };
   return (
-    <div >
+    <div>
       <Header
         imgPath={logo}
         title={"Recipes Items"}
@@ -157,6 +190,20 @@ getAllRecipes(2,1,e.target.value,inputTag,inputCat);
               <p>
                 <strong>category name:</strong> {viewRecipe.category[0].name}
               </p>
+              {LoggedData?.userGroup !== "SystemUser" ? (
+                ""
+              ) : (
+                <button
+                  className="btn btn-success p-2 text-center rounded m-auto"
+                  onClick={() => AddtoFav(viewRecipe.id)}
+                  disabled={Favloading}
+                >
+                  {
+                    Favloading ? "adding..." : "Add to Favorites"
+                  }
+              
+                </button>
+              )}
             </div>
           )}
         </Modal.Body>
@@ -177,44 +224,43 @@ getAllRecipes(2,1,e.target.value,inputTag,inputCat);
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="row mb-2 d-flex
-      ">
+      <div
+        className="row mb-2 d-flex
+      "
+      >
         <div className="col-md-6">
-           <input
-         onChange={SearchFor}
-                  type="text"
-                  placeholder="Search for ..."
-                  className="form-control  mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
-                   />
+          <input
+            onChange={SearchFor}
+            type="text"
+            placeholder="Search for ..."
+            className="form-control  mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
+          />
         </div>
-  <div className="col-md-3">
-     <select
+        <div className="col-md-3">
+          <select
             className="form-control   mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
-     onChange={GetTag}
+            onChange={GetTag}
           >
             <option value="">Select Tag</option>
             {Tags.map((tag) => (
               <option value={tag.id}>{tag.name}</option>
             ))}
           </select>
-  </div>
-    <div className="col-md-3">
- <select onChange={GetCat}
+        </div>
+        <div className="col-md-3">
+          <select
+            onChange={GetCat}
             className="form-control  mx-2 rounded-2 bg-light py-3 border-0 shadow-none"
-           
           >
-              <option value="">Select Category</option>
+            <option value="">Select Category</option>
             {Categories.length > 0 &&
               Categories.map((cat) => (
                 <option value={cat.id}>{cat.name}</option>
               ))}
           </select>
-    </div>
-      
-                    
-
+        </div>
       </div>
-        
+
       <div
         style={{
           maxHeight: "calc(100vh - 450px)", // adjust based on your header/footer height
@@ -222,133 +268,161 @@ getAllRecipes(2,1,e.target.value,inputTag,inputCat);
           width: "100%",
         }}
       >
-      {loading ? (
-  <div className="w-100 d-flex justify-content-center align-items-center" style={{ minHeight: "300px" }}>
-    <div
-      className="spinner-border text-success"
-      style={{ width: "4rem", height: "4rem" }}
-      role="status"
-    ></div>
-  </div>
-) : (
-  <table className="w-100 font-poppins fs-6 text-center table table-striped Tablemain">
-    <thead className="cols-table rounded-3 my-2">
-      <tr>
-        <th>Item Name</th>
-        <th>Image</th>
-        <th>Description</th>
-        <th>Tag</th>
-        <th>Category</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {Recipes.length > 0 ? (
-        Recipes.map((item) => (
-          <tr className="text-center" key={item.id}>
-            <td>{item.name}</td>
-            <td>
-              {item.imagePath ? (
-                <img
-                  className="rounded ImagSize"
-                  src={ImageURL + item.imagePath}
-                  alt={item.name}
-                />
+        {loading ? (
+          <div
+            className="w-100 d-flex justify-content-center align-items-center"
+            style={{ minHeight: "300px" }}
+          >
+            <div
+              className="spinner-border text-success"
+              style={{ width: "4rem", height: "4rem" }}
+              role="status"
+            ></div>
+          </div>
+        ) : (
+          <table className="w-100 font-poppins fs-6 text-center table table-striped Tablemain">
+            <thead className="cols-table rounded-3 my-2">
+              <tr>
+                <th>Item Name</th>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Tag</th>
+                <th>Category</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Recipes.length > 0 ? (
+                Recipes.map((item) => (
+                  <tr className="text-center h-100 w-100" key={item.id}>
+                    <td>{item.name}</td>
+                    <td>
+                      {item.imagePath ? (
+                        <img
+                          className="rounded ImagSize"
+                          src={ImageURL + item.imagePath}
+                          alt={item.name}
+                        />
+                      ) : (
+                        <i
+                          className="bi bi-image text-muted fs-1"
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            lineHeight: "100px",
+                            backgroundColor: "#f8f9fa",
+                            borderRadius: "8px",
+                            display: "inline-block",
+                          }}
+                        ></i>
+                      )}
+                    </td>
+                    <td>{item.description}</td>
+                    <td>{item.tag.name}</td>
+                    <td>{item.category[0].name}</td>
+                    <td className="text-center m-auto">
+                      <i
+                        className="bi bi-eye cursor-pointer"
+                        onClick={() => handleView(item)}
+                      ></i>
+                      {LoggedData?.userGroup !== "SystemUser" ? (
+                        <>
+                          <i
+                            onClick={() =>
+                              navigate(`/dashboard/recipe-data/${item.id}`)
+                            }
+                            className="bi bi-pencil-square mx-2 text-warning cursor-pointer"
+                          ></i>
+                          <i
+                            onClick={() => handleShow(item.id)}
+                            className="bi bi-trash text-danger cursor-pointer"
+                          ></i>
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </td>
+                  </tr>
+                ))
               ) : (
-                <i
-                  className="bi bi-image text-muted fs-1"
-                  style={{
-                    width: "100px",
-                    height: "100px",
-                    lineHeight: "100px",
-                    backgroundColor: "#f8f9fa",
-                    borderRadius: "8px",
-                    display: "inline-block",
-                  }}
-                ></i>
+                <tr>
+                  <td colSpan={6}>
+                    <NoData />
+                  </td>
+                </tr>
               )}
-            </td>
-            <td>{item.description}</td>
-            <td>{item.tag.name}</td>
-            <td>{item.category[0].name}</td>
-            <td>
-              <i
-                className="bi bi-eye cursor-pointer"
-                onClick={() => handleView(item)}
-              ></i>
-              <i
-                onClick={() => navigate(`/dashboard/recipe-data/${item.id}`)}
-                className="bi bi-pencil-square mx-2 text-warning cursor-pointer"
-              ></i>
-              <i
-                onClick={() => handleShow(item.id)}
-                className="bi bi-trash text-danger cursor-pointer"
-              ></i>
-            </td>
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan={6}>
-            <NoData />
-          </td>
-        </tr>
-      )}
-    </tbody>
-  </table>
-  
-)}
-{
-  Recipes.length !== 0 &&
-   <nav className="mx-2" aria-label="Page navigation example">
-  <ul class="pagination">
- <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-      <button
-        className="page-link"
-        onClick={() => {
-          if (currentPage > 1) {
-            getAllRecipes(2, currentPage - 1);
-          }
-        }}
-      >
-        Previous
-      </button>
-    </li>
+            </tbody>
+          </table>
+        )}
+        {Recipes.length !== 0 && (
+          <nav className="mx-2" aria-label="Page navigation example">
+            <ul class="pagination">
+              <li
+                className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => {
+                    if (currentPage > 1) {
+                      getAllRecipes(2, currentPage - 1);
+                    }
+                  }}
+                >
+                  Previous
+                </button>
+              </li>
 
-   {Pages.filter(page =>
-      page === 1 ||
-      page === Pages.length ||
-      Math.abs(page - currentPage) <= 2
-    ).map((page, index, arr) => {
-      const prevPage = arr[index - 1];
-      const isEllipsis = prevPage && page - prevPage > 1;
+              {Pages.filter(
+                (page) =>
+                  page === 1 ||
+                  page === Pages.length ||
+                  Math.abs(page - currentPage) <= 2
+              ).map((page, index, arr) => {
+                const prevPage = arr[index - 1];
+                const isEllipsis = prevPage && page - prevPage > 1;
 
-      return (
-        <React.Fragment key={page}>
-          {isEllipsis && <li className="page-item disabled"><span className="page-link">...</span></li>}
-          <li className={`page-item ${currentPage === page ? "active" : ""}`}>
-            <button className="page-link" onClick={() => getAllRecipes(2, page)}>{page}</button>
-          </li>
-        </React.Fragment>
-      );
-    })}
+                return (
+                  <React.Fragment key={page}>
+                    {isEllipsis && (
+                      <li className="page-item disabled">
+                        <span className="page-link">...</span>
+                      </li>
+                    )}
+                    <li
+                      className={`page-item ${
+                        currentPage === page ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => getAllRecipes(2, page)}
+                      >
+                        {page}
+                      </button>
+                    </li>
+                  </React.Fragment>
+                );
+              })}
 
-   <li className={`page-item ${currentPage === Pages.length ? 'disabled' : ''}`}>
-      <button
-        className="page-link"
-        onClick={() => {
-          if (currentPage < Pages.length) {
-            getAllRecipes(2, currentPage + 1);
-          }
-        }}
-      >
-        Next
-      </button>
-    </li>
-  </ul>
-</nav>
-}
-
+              <li
+                className={`page-item ${
+                  currentPage === Pages.length ? "disabled" : ""
+                }`}
+              >
+                <button
+                  className="page-link"
+                  onClick={() => {
+                    if (currentPage < Pages.length) {
+                      getAllRecipes(2, currentPage + 1);
+                    }
+                  }}
+                >
+                  Next
+                </button>
+              </li>
+            </ul>
+          </nav>
+        )}
       </div>
     </div>
   );

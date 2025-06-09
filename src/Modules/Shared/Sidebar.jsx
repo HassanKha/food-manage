@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/navlogo.png";
+import { AuthContext } from './../../context/AuthContext';
 export default function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -14,8 +15,10 @@ const navigate = useNavigate();
     navigate("/login"); // Redirect after logout
   };
 
+  const {LoggedData} = useContext(AuthContext);
+
   return (
-    <div className="sidebar-cont custom-tex">
+    <div className="sidebar-cont  custom-tex">
       <Sidebar collapsed={collapsed}>
         <Menu>
           <MenuItem
@@ -34,13 +37,17 @@ const navigate = useNavigate();
             {" "}
             Home{" "}
           </MenuItem>
-          <MenuItem
+          {
+            LoggedData?.userGroup != "SystemUser" ? 
+             <MenuItem
             icon={<i className="fa fa-users" />}
             component={<Link to="/dashboard/users" />}
           >
             {" "}
             Users{" "}
-          </MenuItem>
+          </MenuItem> : ""
+          }
+         
           <MenuItem
             icon={<i className="bi bi-fork-knife" />}
             component={<Link to="/dashboard/recipes" />}
@@ -48,13 +55,16 @@ const navigate = useNavigate();
             {" "}
             Recipes{" "}
           </MenuItem>
+             {
+            LoggedData?.userGroup != "SystemUser" ? 
           <MenuItem
             icon={<i className="bi bi-tags-fill" />}
             component={<Link to="/dashboard/categories" />}
           >
             {" "}
             Categories{" "}
-          </MenuItem>
+          </MenuItem> : ""
+}
           <MenuItem
             icon={<i className="bi bi-lock-fill" />}
             component={<Link to="" />}
@@ -62,6 +72,16 @@ const navigate = useNavigate();
             {" "}
             Change Password{" "}
           </MenuItem>
+               {
+            LoggedData?.userGroup === "SystemUser" ? 
+            <MenuItem  icon={<i className="bi bi-heart"></i>}
+             component={<Link to="/dashboard/favs" />}
+            >
+            {" "}
+            Favourites{" "}
+          </MenuItem>
+          : ""
+}
           <MenuItem onClick={handleLogout} icon={<i className="bi bi-box-arrow-right" />}>
             {" "}
             Logout{" "}

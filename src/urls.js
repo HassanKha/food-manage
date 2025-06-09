@@ -42,3 +42,10 @@ export const RECEPIE_URLS = {
 export const TAGS_URLS = {
     GET_TAGS: `/tag/`,
 };
+
+
+export const FAVS_URLS = {
+    GET_RECEPIES: `/userRecipe/`,
+    DELETE_RECEPIE: (ID) => `/userRecipe/${ID}`,
+    CREATE_RECEPIE:`/userRecipe/`,
+};
