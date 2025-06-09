@@ -67,7 +67,7 @@ const navigate = useNavigate();
 }
           <MenuItem
             icon={<i className="bi bi-lock-fill" />}
-            component={<Link to="" />}
+            component={<Link to="/forget-pass" />}
           >
             {" "}
             Change Password{" "}

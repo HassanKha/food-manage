@@ -24,6 +24,7 @@ axiosInstance.interceptors.request.use(
 export const USERS_URLS = {
   LOGIN: `/Users/Login`,
   FORGET_PASS: `/Users/Reset/Request`,
+  REGISTER: `/Users/Register`,
   RESET_PASS: `/Users/Reset`,
       GET_USERS: `/Users/`,
     DELETE_USERS: (ID) => `/Users/${ID}`,

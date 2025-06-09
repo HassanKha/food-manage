@@ -198,9 +198,9 @@ export default function FavList() {
                   <div className="card h-100 shadow-sm">
                     <div className="position-relative">
                       <img
-                        src={
-                          ImageURL + recipe.recipe.imagePath ||
-                          "/placeholder.svg"
+                        src={ recipe.recipe.imagePath ? 
+                          ImageURL + recipe.recipe.imagePath :
+                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO5kCepNdhZvDKJtmPAIWnloSdTal7N1CQaA&s"
                         }
                         className="card-img-top"
                         alt={recipe.title}

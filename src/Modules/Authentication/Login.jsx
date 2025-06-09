@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import logo from "../../assets/logo.svg";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { axiosInstance, USERS_URLS } from "../../urls";
 import { EMAIL_VALIDATION, PASSWORD_VALIDATION } from "../../validations";
@@ -102,18 +102,18 @@ function Login() {
                     </small>
                   )}
                   <div className="d-flex justify-content-between mb-5">
-                    <a
-                      href="/register"
+                    <Link
+                      to="/register"
                       className="text-decoration-none register-btn "
                     >
                       Register Now?
-                    </a>
-                    <a
-                      href="/forget-pass"
+                    </Link>
+                    <Link
+                      to="/forget-pass"
                       className="text-decoration-none fB-btn "
                     >
                       Forgot Password?
-                    </a>
+                    </Link>
                   </div>
 
                   <button
