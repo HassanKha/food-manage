@@ -71,7 +71,7 @@ export default function RecipesList() {
       console.log(error);
     }
   };
-
+  const [favorites, setFavorites] = useState([]);
   const deleteRecipe = async () => {
     try {
       let response = await axiosInstance.delete(
@@ -86,12 +86,31 @@ export default function RecipesList() {
       toast.success(error.response?.data?.message);
     }
   };
+
+   const getAlluserRecipes = async () => {
+      try {
+   
+        let response = await axiosInstance.get(FAVS_URLS.GET_RECEPIES);
+        console.log(response);
+        setFavorites(response.data.data);
+      
+
+      } catch (error) {
+    
+        console.log(error);
+      }
+    };
+
   const [inputName, setInput] = useState("");
+
 
   useEffect(() => {
     getAllRecipes(2, 1, "");
     getAlltags();
     getAllCategories(10, 1);
+    if (LoggedData?.userGroup === "SystemUser") {
+      getAlluserRecipes()
+    }
   }, []);
 
   let getAlltags = async () => {
@@ -146,6 +165,10 @@ export default function RecipesList() {
         toast.success(error.response?.data?.message);
     }
   };
+const isFavorite = (recipe) => {
+  return favorites.some(fav => fav.recipe.id === recipe.id);
+};
+  
   return (
     <div>
       <Header
@@ -192,16 +215,20 @@ export default function RecipesList() {
               </p>
               {LoggedData?.userGroup !== "SystemUser" ? (
                 ""
-              ) : (
+              ) : ( 
                 <button
-                  className="btn btn-success p-2 text-center rounded m-auto"
+                  className="btn btn-success d-flex justify-content-center align-items-center gap-2 p-2 text-center rounded m-auto"
                   onClick={() => AddtoFav(viewRecipe.id)}
-                  disabled={Favloading}
+                  disabled={Favloading ? true : isFavorite(viewRecipe) ? true : false}
+
                 >
                   {
-                    Favloading ? "adding..." : "Add to Favorites"
+                    Favloading ? "adding..."  : isFavorite(viewRecipe) ? "Added to Favorites" : "Add to Favorites"
                   }
-              
+             { isFavorite(viewRecipe) &&      <i
+                          className={`bi bi-heart-fill text-danger`}
+                          style={{ fontSize: "1.2rem" }}
+                        ></i> }
                 </button>
               )}
             </div>
@@ -320,22 +347,29 @@ export default function RecipesList() {
                     <td>{item.description}</td>
                     <td>{item.tag.name}</td>
                     <td>{item.category[0].name}</td>
-                    <td className="text-center m-auto">
+                    <td className="  ">
                       <i
-                        className="bi bi-eye cursor-pointer"
+                        className="bi mx-1 bi-eye cursor-pointer"
                         onClick={() => handleView(item)}
                       ></i>
+                      {LoggedData?.userGroup === "SystemUser" && isFavorite(item)
+                      && 
+                           <i
+                          className={`bi mx-1 bi-heart-fill text-danger`}
+                     
+                        ></i>
+                      }
                       {LoggedData?.userGroup !== "SystemUser" ? (
                         <>
                           <i
                             onClick={() =>
                               navigate(`/dashboard/recipe-data/${item.id}`)
                             }
-                            className="bi bi-pencil-square mx-2 text-warning cursor-pointer"
+                            className="bi mx-1 bi-pencil-square  text-warning cursor-pointer"
                           ></i>
                           <i
                             onClick={() => handleShow(item.id)}
-                            className="bi bi-trash text-danger cursor-pointer"
+                            className="bi mx-1 bi-trash text-danger cursor-pointer"
                           ></i>
                         </>
                       ) : (
