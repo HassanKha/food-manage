@@ -1,10 +1,9 @@
 import React, { useContext } from "react";
 
 import Navbar from "./Navbar";
-import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import SideBar from "./SideBar";
-import { AuthContext } from "../../context/AuthContext";
+
 
 export default function MasterLayout() {
   
