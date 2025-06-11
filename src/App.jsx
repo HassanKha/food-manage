@@ -24,6 +24,7 @@ import FavList from "./Modules/Favourites/FavList";
 import { jwtDecode } from "jwt-decode";
 import ProtectedRoute from "./Modules/Shared/ProtectedRoute";
 import RecipesList from "./Modules/Recipes/RecipesList";
+import VerifyEmail from "./Modules/Authentication/VerifyEmail";
 
 function App() {
  
@@ -55,7 +56,7 @@ function App() {
         },
         {
           path: "verify-account",
-          element: <Login />,
+          element: <VerifyEmail />,
         },
       ],
       errorElement: <Notfound />,

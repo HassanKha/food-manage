@@ -23,6 +23,7 @@ axiosInstance.interceptors.request.use(
 
 export const USERS_URLS = {
   LOGIN: `/Users/Login`,
+  Verify: `/Users/verify`,
   FORGET_PASS: `/Users/Reset/Request`,
   REGISTER: `/Users/Register`,
   CHANGE_PASS: `/Users/ChangePassword`,

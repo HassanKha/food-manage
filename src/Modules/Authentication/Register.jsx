@@ -94,8 +94,8 @@ function Register() {
       })
 
       console.log("Registration successful:", response.data)
-      toast.success("Registration successful! Please login.")
-      navigate("/login")
+      toast.success("Registration successful! go to your email , verify and Please login.")
+      navigate("/verify-account")
     } catch (error) {
       const errors = error.response?.data?.additionalInfo?.errors
 
